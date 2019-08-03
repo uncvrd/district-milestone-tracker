@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +9,11 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(
+    private auth: AuthService,
+    private http: HttpService
+  ) {
+    this.http.request("GET", '')
+  }
 
 }
