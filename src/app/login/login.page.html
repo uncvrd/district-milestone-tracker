@@ -1,14 +1,10 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <h3>Howdy, GUEST</h3>
-  <p>Login to get started...</p>
-
-  <ion-button (click)="auth.googleSignIn()">
-    <ion-icon name="logo-google"></ion-icon> Connect Google
-  </ion-button>
+  <div class="login-container">
+    <h3>YouTube Milestone Tracker</h3>
+    <p>Login to get started</p>
+    <ion-button color="danger" size="large" (click)="auth.login()">
+      <ion-icon name="logo-youtube"></ion-icon>&nbsp; Login With YouTube
+    </ion-button>
+    <small>Built with ❤️ by Jordan Lewallen</small>
+  </div>
 </ion-content>

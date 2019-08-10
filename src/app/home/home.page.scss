@@ -1,1 +1,41 @@
+.logged-in-container {
+    width: 100%;
+}
 
+.welcome-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.image-container {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 12px;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mat-form-field {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0;
+}
+
+.no-milestones-container {
+    margin: 12px;
+}
+
+.milestone-alert * {
+    font-size: 12px;
+    color: #FF0000
+}

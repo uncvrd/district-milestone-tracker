@@ -1,8 +1,9 @@
 export interface User {
     uid: string;
-    email: string;
+    email?: string;
+    milestones?: number[];
     refreshToken: string;
     photoURL?: string;
     displayName?: string;
-    myCustomData?: string;
+    uploadPlaylistId?: string;
 }
