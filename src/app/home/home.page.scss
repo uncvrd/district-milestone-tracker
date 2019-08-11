@@ -24,7 +24,7 @@
 
 .mat-form-field {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 30px;
 }
 
 .mat-form-field-appearance-outline .mat-form-field-infix {
@@ -38,4 +38,17 @@
 .milestone-alert * {
     font-size: 12px;
     color: #FF0000
+}
+
+mat-list-item:hover {
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.mat-list {
+    margin-bottom: 24px;
+}
+
+ion-button {
+    height: 46px;
 }

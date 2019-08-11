@@ -11,11 +11,15 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
 
   constructor(
-    private auth: AuthService,
+    public auth: AuthService,
     private router: Router
   ) { }
 
   ngOnInit() {
+  }
+
+  goToPrivacyPolicy() {
+    this.router.navigate(["/privacy-policy"]);
   }
 
 }

@@ -13,3 +13,12 @@ p {
 small {
     margin-top: 12px;
 }
+
+.privacy-policy {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.privacy-policy:hover {
+    text-decoration: underline;
+}

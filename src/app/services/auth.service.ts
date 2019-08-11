@@ -6,9 +6,10 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { HelperService } from './helper.service';
 
 declare var gapi: any;
 
@@ -17,12 +18,13 @@ declare var gapi: any;
 })
 export class AuthService {
 
-  user$: Observable<firebase.User>; 
-  // user$: Observable<User>;
+  user$: Observable<firebase.User>;
+  userSubject$;
 
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
+    private helper: HelperService,
     private router: Router
   ) {
     this.user$ = this.afAuth.authState.pipe(
@@ -36,6 +38,9 @@ export class AuthService {
         }
       })
     )
+
+    // this.user$ = this.afAuth.authState;
+    // this.userSubject$ = this.helper.convertObservableToBehaviorSubject(this.user$, null);
     this.initClient();
   }
 
@@ -54,11 +59,6 @@ export class AuthService {
     return userRef.set(data, { merge: true })
 
   }
-
-  // async signOut() {
-  //   await this.afAuth.auth.signOut();
-  //   this.router.navigate(['/login']);
-  // }
 
   // Initialize the Google API client with desired scopes
   initClient() {
@@ -81,7 +81,7 @@ export class AuthService {
   async login() {
     const googleAuth = gapi.auth2.getAuthInstance()
     const googleUser = await googleAuth.signIn();
-  
+
     const token = googleUser.getAuthResponse().id_token;
     const credential = auth.GoogleAuthProvider.credential(token);
 
@@ -103,9 +103,9 @@ export class AuthService {
 
     await this.updateUserData(userObj);
     this.router.navigate(['/home'])
-    
+
   }
-  
+
   async logout() {
     await this.afAuth.auth.signOut();
     this.router.navigate(['/login']);

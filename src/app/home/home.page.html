@@ -16,37 +16,37 @@
         <h3>Hi, {{ user.displayName }}!</h3>
       </div>
       <form [formGroup]="milestoneForm" (ngSubmit)="onSubmit()">
-          <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput placeholder="Email" formControlName="email">
-              <mat-hint>Enter an email address you'd like to have receive milestone notifications</mat-hint>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-              <mat-label>View milestones</mat-label>
-              <mat-chip-list #chipList>
-                <mat-chip *ngFor="let milestone of milestones" [selectable]="selectable" [removable]="removable"
-                  (removed)="remove(milestone)">
-                  {{ milestone }}
-                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                </mat-chip>
-                <input placeholder="New milestone..." [matChipInputFor]="chipList"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                  (matChipInputTokenEnd)="add($event)">
-              </mat-chip-list>
-              <mat-hint>Add view milestones that will trigger email alerts (do not add commas). Ex: 500000 & 1000000
-              </mat-hint>
-            </mat-form-field>
-          <ion-button expand="block" color="dark" type="submit" [disabled]="!milestoneForm.valid">Update</ion-button>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Email" formControlName="email">
+          <mat-hint>Enter an email address you'd like to have receive milestone notifications</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>View milestones</mat-label>
+          <mat-chip-list #chipList>
+            <mat-chip *ngFor="let milestone of milestones" [selectable]="selectable" [removable]="removable"
+              (removed)="remove(milestone)">
+              {{ milestone }}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="New milestone..." [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)">
+          </mat-chip-list>
+          <mat-hint>Add view milestones that will trigger email alerts (do not add commas). Ex: 500000 & 1000000
+          </mat-hint>
+        </mat-form-field>
+        <ion-button expand="block" color="dark" type="submit" [disabled]="!milestoneForm.valid">Update</ion-button>
       </form>
       <h3>Recent milestones</h3>
       <mat-divider></mat-divider>
       <ng-container *ngIf="recentMilestones.length > 0; else noRecents">
         <mat-list>
-          <mat-list-item *ngFor="let milestone of recentMilestones">
-            <img matListAvatar [src]="milestone.imageURL" alt="filler" />
+          <mat-list-item *ngFor="let milestone of recentMilestones" (click)="onMilestoneClick(milestone)">
+            <img matListAvatar [src]="milestone.thumbnail" alt="filler" />
             <h3 matLine> {{ milestone.title }} </h3>
             <p matLine class="milestone-alert">
-              <span> {{ milestone.views | numberFormat }} views </span>
+              <span> 🎉 {{ milestone.milestone | numberFormat }} views </span>
             </p>
           </mat-list-item>
         </mat-list>
@@ -54,7 +54,7 @@
       <ng-template #noRecents>
         <div class="no-milestones-container">You have no recent milestones!</div>
       </ng-template>
-      <ion-button expand="block" color="danger" (click)="auth.logout()">Logout</ion-button>
+      <ion-button expand="block" color="danger" (click)="logout()">Logout</ion-button>
     </div>
   </div>
 </ion-content>

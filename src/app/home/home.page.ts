@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { DbService } from '../services/db.service';
 import { User } from '../models/user.model';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatChipInputEvent} from '@angular/material';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material';
 import { ToastController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -12,7 +12,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
   milestoneForm: FormGroup
 
@@ -23,31 +23,35 @@ export class HomePage {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   milestones = [];
   user: User;
-
-  recentMilestones = []
+  recentMilestones = [];
 
   constructor(
     private db: DbService,
-    private auth: AuthService,
+    public auth: AuthService,
     private toast: ToastController,
     private formBuilder: FormBuilder
   ) {
     this.milestoneForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]]
     });
+  }
+
+  ngOnInit(): void {
     this.auth.user$.subscribe((user: User) => {
-      this.db.collection$(`recent-milestones/${user.uid}/videos`).subscribe((videos) => {
-        this.recentMilestones = videos;
-      })
-      this.db.doc$(`users/${user.uid}`).subscribe((user: User) => {
-        this.parseUser(user);
-      })
+      if (user) {
+        this.db.collection$(`recent-milestones/${user.uid}/videos`, ref => ref.orderBy('date', 'desc').limit(10)).subscribe((videos) => {
+          this.recentMilestones = videos;
+        })
+        this.db.doc$(`users/${user.uid}`).subscribe((user: User) => {
+          this.parseUser(user);
+        })
+      }
     })
   }
 
   parseUser(user: User) {
     this.user = user;
-    this.milestones = user.milestones;
+    this.milestones = user.milestones || [];
     this.milestoneForm.patchValue({
       email: this.user.email
     })
@@ -84,6 +88,10 @@ export class HomePage {
     })
   }
 
+  onMilestoneClick(milestone) {
+    window.open(`https://youtu.be/${milestone.videoId}`);
+  }
+
   async presentToast(message: string) {
     const toast = await this.toast.create({
       duration: 2000,
@@ -92,6 +100,13 @@ export class HomePage {
       position: 'bottom'
     });
     toast.present();
+  }
+
+  async logout() {
+    await this.auth.logout();
+    this.milestones = [];
+    this.user = null;
+    this.recentMilestones = [];
   }
 
 }
