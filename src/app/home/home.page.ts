@@ -21,7 +21,7 @@ export class HomePage implements OnInit {
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  milestones = [];
+  milestones: number[] = [];
   user: User;
   recentMilestones = [];
 
@@ -62,7 +62,7 @@ export class HomePage implements OnInit {
     const value = event.value;
 
     if ((value || '').trim()) {
-      this.milestones.push(value);
+      this.milestones.push(parseInt(value));
     }
 
     // Reset the input value

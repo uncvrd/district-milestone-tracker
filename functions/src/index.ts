@@ -24,16 +24,15 @@ const runtimeOpts = {
 
 export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest(async (req: any, res: any) => {
 
-    console.log('hi');
-
     try {
-        let usersQuery = await db.collection('users').get();
+        let usersQuery = await db.collection('users').where("approved", "==", true).get();
 
         let users: User[] = usersQuery.docs.map((doc: any) => {
             return doc.data();
         });
 
         for (const user of users) {
+
             const youtubeVideos: Video[] | undefined = await getPlaylistVideos(user.uploadPlaylistId);
             const videoIds: string[] = youtubeVideos.map((video) => {
                 return video.videoId
@@ -63,15 +62,21 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
                 for (const uploadedVid of uploadedVideos) {
                     let matchedFsVid: Video | undefined = fsVideos.find(v => v.videoId === uploadedVid.videoId);
 
+                    let goal: number = parseInt(uploadedVid.views);
+                    var closestMilestone: number = user.milestones.reduce((prev: number, curr: number) => {
+                        return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+                    });
+
+                    var newMilestonRef = db.collection('recent-milestones')
+                        .doc(user.uid)
+                        .collection('videos')
+                        .doc(uploadedVid.videoId);
+
                     if (matchedFsVid) {
 
-                        let goal: any = uploadedVid.views;
-                        var closestMilestone: string = user.milestones.reduce((prev: any, curr: any) => {
-                            return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
-                        });
-
-                        if (((uploadedVid.views || "0") >= closestMilestone) && ((matchedFsVid.views || "0") <= closestMilestone)) {
-
+                        if (((parseInt(uploadedVid.views) || 0) >= closestMilestone) && ((parseInt(matchedFsVid.views) || 0) <= closestMilestone)) {
+                            console.log("NEW MILESTONE ALERT!")
+                            console.log(uploadedVid);
                             var vidUpdateRef = db.collection('uploads')
                                 .doc(user.uid)
                                 .collection('videos')
@@ -84,11 +89,6 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
 
                             uploadedVid.date = moment.utc().unix();
                             uploadedVid.milestone = closestMilestone;
-
-                            var newMilestonRef = db.collection('recent-milestones')
-                                .doc(user.uid)
-                                .collection('videos')
-                                .doc(uploadedVid.videoId);
 
                             newMilestoneBatch.set(newMilestonRef, uploadedVid);
                             newMilestones.push(uploadedVid);
@@ -103,6 +103,13 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
                         await vidCreateRef.set({
                             ...uploadedVid
                         })
+
+                        if (parseInt(uploadedVid.views) >= closestMilestone) {
+
+                            newMilestoneBatch.set(newMilestonRef, uploadedVid);
+                            newMilestones.push(uploadedVid);
+                        }
+
                     }
                 }
 
@@ -139,7 +146,6 @@ async function getPlaylistVideos(playlistId: string, pageToken = null): Promise<
         });
 
         const mappedVideos: Video[] = res.data.items.map((item: any) => {
-            console.log(item.snippet);
             return {
                 title: item.snippet.title,
                 thumbnail: getThumbnailURL(item.snippet.thumbnails),
@@ -236,7 +242,7 @@ function formatEmailHtml(user: User, emailVideos: Video[]): string {
 			${vid.title}
 		  </mj-text>
 		  <mj-text font-size="16px" align="center" color="#ff0000">
-			🎉 ${vid.milestone} Views</mj-text>
+			🎉 ${formatNumber(vid.milestone)} Views</mj-text>
 		</mj-column>
 	  </mj-section>`
     })
@@ -269,6 +275,14 @@ function formatEmailHtml(user: User, emailVideos: Video[]): string {
   </mjml>`)
 
     return htmlOutput.html
+}
+
+function formatNumber(value: number | undefined) {
+    if (value) {
+        return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    } else {
+        return "0"
+    }
 }
 
 function getThumbnailURL(thumbnails: any): string {
