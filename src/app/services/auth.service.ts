@@ -6,10 +6,8 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { HelperService } from './helper.service';
 
 declare var gapi: any;
 
@@ -24,7 +22,6 @@ export class AuthService {
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private helper: HelperService,
     private router: Router
   ) {
     this.user$ = this.afAuth.authState.pipe(
@@ -39,8 +36,6 @@ export class AuthService {
       })
     )
 
-    // this.user$ = this.afAuth.authState;
-    // this.userSubject$ = this.helper.convertObservableToBehaviorSubject(this.user$, null);
     this.initClient();
   }
 

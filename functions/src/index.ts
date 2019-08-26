@@ -24,6 +24,8 @@ const runtimeOpts = {
 
 export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest(async (req: any, res: any) => {
 
+    var count = 1;
+
     try {
         let usersQuery = await db.collection('users').where("approved", "==", true).get();
 
@@ -41,6 +43,9 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
             const youtubeVideoStats: Video[] | undefined = await getVideoStats(videoIds);
 
             let uploadedVideos: Video[] = [];
+
+            console.log(youtubeVideoStats.length);
+            console.log(youtubeVideos.length);
 
             youtubeVideos.forEach((video, index) => {
                 uploadedVideos.push(Object.assign({}, video, youtubeVideoStats[index]))
@@ -62,9 +67,9 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
                 for (const uploadedVid of uploadedVideos) {
                     let matchedFsVid: Video | undefined = fsVideos.find(v => v.videoId === uploadedVid.videoId);
 
-                    let goal: number = parseInt(uploadedVid.views);
+                    let views: number = parseInt(uploadedVid.views);
                     var closestMilestone: number = user.milestones.reduce((prev: number, curr: number) => {
-                        return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+                        return (Math.abs(curr - views) < Math.abs(prev - views) ? curr : prev);
                     });
 
                     var newMilestonRef = db.collection('recent-milestones')
@@ -74,7 +79,8 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
 
                     if (matchedFsVid) {
 
-                        if (((parseInt(uploadedVid.views) || 0) >= closestMilestone) && ((parseInt(matchedFsVid.views) || 0) <= closestMilestone)) {
+                        if (((parseInt(uploadedVid.views) || 0) >= closestMilestone)
+                            && ((parseInt(matchedFsVid.views) || 0) <= closestMilestone)) {
                             console.log("NEW MILESTONE ALERT!")
                             console.log(uploadedVid);
                             var vidUpdateRef = db.collection('uploads')
@@ -104,10 +110,17 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
                             ...uploadedVid
                         })
 
+                        count++
+
                         if (parseInt(uploadedVid.views) >= closestMilestone) {
+
+                            uploadedVid.date = moment.utc().unix();
+                            uploadedVid.milestone = closestMilestone;
 
                             newMilestoneBatch.set(newMilestonRef, uploadedVid);
                             newMilestones.push(uploadedVid);
+                            console.log("NEW MILESTONE ALERT FOR NEW VIDEO!")
+                            console.log(uploadedVid);
                         }
 
                     }
@@ -118,6 +131,7 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
                     try {
                         await newMilestoneBatch.commit();
                         await sendEmail(user, newMilestones);
+                        newMilestones = [];
                     } catch (error) {
                         console.log(error);
                     }
@@ -129,7 +143,7 @@ export const milestoneTrackerV2 = functions.runWith(runtimeOpts).https.onRequest
     } catch (error) {
         console.log(error);
     }
-
+    console.log(count);
     res.end();
 });
 
