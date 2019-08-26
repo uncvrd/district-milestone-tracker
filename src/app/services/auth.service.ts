@@ -62,8 +62,8 @@ export class AuthService {
 
       // It's OK to expose these credentials, they are client safe.
       gapi.client.init({
-        apiKey: 'AIzaSyC7tLF4bs2-Pd36kNjsBqeEiFA7Q3EaCfQ',
-        clientId: '992040735911-dojc5jvsuo6cp1jagnhkp8cijq9epct3.apps.googleusercontent.com',
+        apiKey: '<INSERT API KEY HERE>',
+        clientId: '<INSERT CLIENT ID HERE>',
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
         scope: 'https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly'
       })
