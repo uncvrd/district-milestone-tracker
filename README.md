@@ -5,14 +5,12 @@ This is a package to track YouTube View Milestones (some assembly required)! The
 Running this application **is free** because the amount of resources you will use will be covered under their free tiers, however, you will need to enter payment information. I'll explain this later.
 
 ## Download The Project
----
 
 To download, click the green "Clone or Download" button, and then click the "Download Zip"
 
 Unzip this package in your desired location. For example, you could place this package in `/Documents/district-milestone-tracker`
 
 ## Environment Setup
----
 
 Install the latest version of Node to your computer: https://nodejs.org/en/ (click the left box "Recommended For Most Users")
 
@@ -30,8 +28,7 @@ In order to deploy your project, you will need to install 2 command line tools:
 - **Ionic** (this is the framework the project is built off of)
 - **Firebase** (this will be used to deploy your project to the web)
 
-### Setup Ionic
----
+## Setup Ionic
 
 In the command prompt/terminal we opened using `CTRL + ~` in VS Code type the following line, then hit ENTER:
 
@@ -52,7 +49,6 @@ When you run `sudo npm install -g ionic`
 So in short, we're globally installing a package called `ionic` to your computer. Which now means we can run commands like `ionic build` which will build an ionic project. (We'll use that command later).
 
 ## Setup Firebase
----
 
 Let's do the same thing, but this time for firebase, this should look familiar!
 
@@ -61,7 +57,6 @@ Let's do the same thing, but this time for firebase, this should look familiar!
 Documented here: https://firebase.google.com/docs/cli
 
 ## Install Project Dependencies
----
 
 Lets also install the required project dependencies:
 
@@ -76,7 +71,6 @@ We have to do this in another folder as well:
 - You can type "`ls`" and ENTER and see that there's another `package.json` here! So run: "`npm install`" again.
 
 ## Google Firebase Configuration
----
 
 Go to: https://firebase.google.com/
 
@@ -107,7 +101,6 @@ Copy this to your clipboard.
 - Paste the object that you copied to your clipboard here **in both locations** (you should see my placeholder).
 
 ## Initialize Firebase in VS Code
----
 
 Back in VS Code...
 
@@ -122,7 +115,6 @@ Back in VS Code...
 - "File www/index.html already exists. Overwrite?" Enter "No".
 
 ## Setup Email Service (SendGrid)
----
 
 - Create a SendGrid account: https://sendgrid.com/
 - Once logged in, click the settings tab on the left-hand sidebar. There should be a dropdown option for "API Keys". Click that.
@@ -130,7 +122,6 @@ Back in VS Code...
 - This will generate an API code, copy this!! Once you close this page, you can never see this code again, so copy it to a notepad app for now.
 
 ## Google Cloud Configuration
----
 
 Go to: https://cloud.google.com/
 
@@ -148,7 +139,6 @@ Go to: https://cloud.google.com/
 - Do you see a "Web client (auto created by Google Service)" under the OAuth 2.0 Client ID header? Copy the key to your notepad and label it "google client Id"
 
 ## Set the Google Client Id and API Key in VS Code
----
 
 Hop back to VS Code. In the left hand sidebar, traverse the file stucture. We need to open a file called `auth.service.ts`. It can be found here: `~/src/app/services/auth.service.ts`. Open this file and look for the code on line 64:
 
@@ -164,7 +154,6 @@ gapi.client.init({
 Copy the `API Key` and `Client Id` from your notepad here and save the file "`ctrl/cmd + s`"
 
 ## Add Firebase Environment Variable
----
 
 Hop back over to your VS Code terminal...
 
@@ -192,7 +181,6 @@ You should see something like:
 ```
 
 ## Build & Deploy Your Project!
----
 
 Go to your VS Code terminal and get back to your root project directory.
 
@@ -207,7 +195,6 @@ This may take a minute or two as your project is compiled, then to deploy:
 Nice! Once this is done, take note of the URL that is shown in the terminal (something like: https://district-milestone-tracker-98869.firebaseapp.com). Copy this url to your clipboard.
 
 ## Whitelist URLs for Google Authentication
----
 
 - Go Back to your project page on Google Cloud, where you copied your api keys: https://console.cloud.google.com/apis/credentials
 - Click on "Web client (auto created by Google Service)" underneath OAuth 2.0 Client IDs.
@@ -224,7 +211,6 @@ Nice! Once this is done, take note of the URL that is shown in the terminal (som
 - Click Save
 
 ## Log in to your site!
----
 
 - Visit your URL, such as: https://district-milestone-tracker-98869.firebaseapp.com
 - You should be presented with a simple YouTube log in page, click Sign In With YouTube and **LOG IN WITH YOUR YOUTUBE ACCOUNT <- IMPORTANT!!**
