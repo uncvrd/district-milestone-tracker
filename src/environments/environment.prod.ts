@@ -5,7 +5,7 @@ export const environment = {
     authDomain: "<INSERT AUTH DOMAIN HERE>",
     databaseURL: "<INSERT DB URL HERE>",
     projectId: "<INSERT PROJECT ID HERE>",
-    storageBucket: "", //this will probably be empty
+    storageBucket: "<INSERT STORAGE BUCKET HERE>",
     messagingSenderId: "<ENTER MESSAGING SENDER ID HERE>",
     appId: "<ENTER APP ID HERE>"
   }
